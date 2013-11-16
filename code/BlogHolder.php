@@ -12,23 +12,23 @@
  * BlogHolders have a form on them for easy posting, and an owner that can post to them, BlogTrees don't
  */
 class BlogHolder extends BlogTree implements PermissionProvider {
-	static $icon = "blog/images/blogholder";
+	private static $icon = "blog/images/blogholder";
 
-	static $db = array(
+	private static $db = array(
 		'TrackBacksEnabled' => 'Boolean',
 		'AllowCustomAuthors' => 'Boolean',
 	);
 
-	static $has_one = array(
+	private static $has_one = array(
 		'Owner' => 'Member',
 	);
 
-	static $allowed_children = array(
+	private static $allowed_children = array(
 		'BlogEntry'
 	);
 
 	function getCMSFields() {
-		$blogOwners = $this->blogOwners(); 
+		$blogOwners = $this->blogOwners();
 
 		SiteTree::disableCMSFieldsExtensions();
 		$fields = parent::getCMSFields();
@@ -42,18 +42,18 @@ class BlogHolder extends BlogTree implements PermissionProvider {
 
 		return $fields;
 	}
-	
+
 	/**
 	 * Get members who have BLOGMANAGEMENT and ADMIN permission
-	 */ 
+	 */
 
 	function blogOwners($sort = array('FirstName'=>'ASC','Surname'=>'ASC'), $direction = null) {
-		
-		$members = Permission::get_members_by_permission(array('ADMIN','BLOGMANAGEMENT')); 
+
+		$members = Permission::get_members_by_permission(array('ADMIN','BLOGMANAGEMENT'));
 		$members->sort($sort);
-		
+
 		$this->extend('extendBlogOwners', $members);
-		
+
 		return $members;
 	}
 
@@ -135,8 +135,8 @@ class BlogHolder extends BlogTree implements PermissionProvider {
 			} else {
 				$blogholder->write();
 				$blogholder->publish("Stage", "Live");
-			}	
-			
+			}
+
 
 			$blog = new BlogEntry();
 			$blog->Title = _t('BlogHolder.SUCTITLE', "SilverStripe blog module successfully installed");
@@ -151,10 +151,33 @@ class BlogHolder extends BlogTree implements PermissionProvider {
 			DB::alteration_message("Blog page created","created");
 		}
 	}
+
+    function BlogEntriesFeatured()
+    {
+		return BlogEntry::get('BlogEntry', sprintf('ParentID = %d AND Featured = 1', $this->ID), 'Created DESC', '');
+    }
+
+    function BlogTags()
+    {
+        $tags = new ArrayList();
+        $ts = array();
+
+        $r = DB::Query('SELECT `Tags` From BlogEntry');
+        while($p = $r->record()) {
+            $t = explode(",", $p['Tags']);
+            foreach($t as $tag) {
+                if(in_array($tag, $ts)) continue;
+                $tags->push( new ArrayData(array('Title' => $tag)) );
+                $ts[] = $tag;
+            }
+        }
+        return $tags;
+    }
+
 }
 
 class BlogHolder_Controller extends BlogTree_Controller {
-	static $allowed_actions = array(
+	private static $allowed_actions = array(
 		'index',
 		'tag',
 		'date',
@@ -196,9 +219,9 @@ class BlogHolder_Controller extends BlogTree_Controller {
 	/**
 	 * A simple form for creating blog entries
 	 */
-	function BlogEntryForm() {	
+	function BlogEntryForm() {
 		if(!Permission::check('BLOGMANAGEMENT')) return Security::permissionFailure();
-		
+
 
 		$id = 0;
 		if($this->request->latestParam('ID')) {
@@ -223,7 +246,7 @@ class BlogHolder_Controller extends BlogTree_Controller {
 		} else {
 			$tagfield = new TextField('Tags');
 		}
-		
+
 		$field = 'TextField';
 		if(!$this->AllowCustomAuthors && !Permission::check('ADMIN')) {
 			$field = 'ReadonlyField';
@@ -237,7 +260,7 @@ class BlogHolder_Controller extends BlogTree_Controller {
 			new LiteralField("Tagsnote"," <label id='tagsnote'>"._t('BlogHolder.TE', "For example: sport, personal, science fiction")."<br/>" .
 												_t('BlogHolder.SPUC', "Please separate tags using commas.")."</label>")
 		);
-		
+
 		$submitAction = new FormAction('postblog', _t('BlogHolder.POST', 'Post blog entry'));
 
 		$actions = new FieldList($submitAction);
@@ -282,7 +305,7 @@ class BlogHolder_Controller extends BlogTree_Controller {
 		$blogentry->Content = str_replace("\r\n", "\n", $form->Fields()->fieldByName('BlogPost')->dataValue());
 
 		if(Object::has_extension($this->ClassName, 'Translatable')) {
-			$blogentry->Locale = $this->Locale; 
+			$blogentry->Locale = $this->Locale;
 		}
 
 		$blogentry->Status = "Published";

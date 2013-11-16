@@ -1,27 +1,27 @@
 <% if BlogEntries.MoreThanOnePage %>
-	<div id="PageNumbers">
-		<p>
+	<div class="blog-pagination span12">
+		<div class="wrap">
 			<% if BlogEntries.NotFirstPage %>
-				<a class="prev" href="$BlogEntries.PrevLink" title="View the previous page">Prev</a>
+				<a class="prev" href="$BlogEntries.PrevLink" title="View the previous page"></a>
 			<% end_if %>
 		
-			<span>
-		    	<% control BlogEntries.PaginationSummary(4) %>
-					<% if CurrentBool %>
-						<span class="current">$PageNum</span>
-					<% else %>
-						<% if Link %>
-							<a href="$Link" title="View page number $PageNum">$PageNum</a>
+			<div class="items-wrap">
+				<ul>
+		    		<% loop BlogEntries.PaginationSummary(5) %>
+						<% if CurrentBool %>
+							<li><a class="active">$PageNum</a></li>
 						<% else %>
-							&hellip;
+							<% if Link %>
+								<li><a href="$Link" title="View page number $PageNum">$PageNum</a></li>
+							<% end_if %>
 						<% end_if %>
-					<% end_if %>
-				<% end_control %>
-			</span>
+					<% end_loop %>
+				</ul>
+			</div>
 		
 			<% if BlogEntries.NotLastPage %>
-				<a class="next" href="$BlogEntries.NextLink" title="View the next page">Next</a>
+				<a class="next" href="$BlogEntries.NextLink" title="View the next page"></a>
 			<% end_if %>
-		</p>
+		</div>
 	</div>
 <% end_if %>

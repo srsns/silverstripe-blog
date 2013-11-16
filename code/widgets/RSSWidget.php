@@ -1,19 +1,19 @@
 <?php
 
 class RSSWidget extends Widget {
-	static $db = array(
+	static private $db = array(
 		"RSSTitle" => "Text",
 		"RssUrl" => "Text",
 		"NumberToShow" => "Int"
 	);
 	
-	static $has_one = array();
+	static private $has_one = array();
 	
-	static $has_many = array();
+	static private $has_many = array();
 	
-	static $many_many = array();
+	static private $many_many = array();
 	
-	static $belongs_many_many = array();
+	static private $belongs_many_many = array();
 	
 	static $defaults = array(
 		"NumberToShow" => 10,

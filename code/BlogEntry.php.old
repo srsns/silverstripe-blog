@@ -5,46 +5,41 @@
  * @package blog
  */
 class BlogEntry extends Page {
-	private static $db = array(
+	static $db = array(
 		"Date" => "SS_Datetime",
 		"Author" => "Text",
-		"Tags" => "Text",
-		"Category" => "Text",
-        "Featured" => "Boolean",
-        "Tagline" => "Text"
+		"Tags" => "Text"
 	);
-
-	private static $default_parent = 'BlogHolder';
-
-	private static $can_be_root = false;
-
-	private static $icon = "blog/images/blogpage";
-
-    private static $has_one = array(
-		"Image" => "Image"
-	);
-
-	private static $has_many = array();
-
-    private static $many_many = array();
-
-	private static $belongs_many_many = array();
-
-	private static $defaults = array(
+	
+	static $default_parent = 'BlogHolder';
+	
+	static $can_be_root = false;
+	
+	static $icon = "blog/images/blogpage";
+		
+	static $has_one = array();
+	
+	static $has_many = array();
+	
+	static $many_many = array();
+	
+	static $belongs_many_many = array();
+	
+	static $defaults = array(
 		"ProvideComments" => true,
 		'ShowInMenus' => false
 	);
-
-	private static $extensions = array(
+	
+	static $extensions = array(
 		'TrackBackDecorator'
 	);
-
+		
 	/**
 	 * Is WYSIWYG editing allowed?
 	 * @var boolean
 	 */
 	static $allow_wysiwyg_editing = true;
-
+	
 	/**
 	 * Overload so that the default date is today.
 	 */
@@ -64,7 +59,6 @@ class BlogEntry extends Page {
 		SiteTree::disableCMSFieldsExtensions();
 		$fields = parent::getCMSFields();
 		SiteTree::enableCMSFieldsExtensions();
-
 		
 		if(!self::$allow_wysiwyg_editing) {
 			$fields->removeFieldFromTab("Root.Main","Content");
@@ -81,13 +75,9 @@ class BlogEntry extends Page {
 							"<a  id=\"BBCodeHint\" target='new'>" . _t("BlogEntry.BBH", "BBCode help") . "</a>" .
 							"<div id='BBTagsHolder' style='display:none;'>".$codeparser->useable_tagsHTML()."</div></div>"));
 		}
-		
-		$fields->addFieldToTab("Root.Main", new TextField("Category", _t("BlogEntry.CA", "Category")),"Content");
+				
 		$fields->addFieldToTab("Root.Main", new TextField("Tags", _t("BlogEntry.TS", "Tags (comma sep.)")),"Content");
-
-		$fields->addFieldToTab("Root.Main", new UploadField("Image"), "Content");
-        $fields->addFieldToTab("Root.Main", new CheckboxField("Featured", "Featured"),"Content");
-        $fields->addFieldToTab("Root.Main", new TextField("Tagline", "Tagline"),"Content");
+		
 		$this->extend('updateCMSFields', $fields);
 		
 		return $fields;
@@ -234,33 +224,11 @@ class BlogEntry extends Page {
 			'Date ASC'
 		);		
 	}
-
-	public function ThumbnailLge() {
-		return $this->Image()->CroppedImage(620,270);
-	}
-
-	public function ThumbnailMed() {
-		return $this->Image()->CroppedImage(300,150);
-	}
-
-	public function ThumbnailSml() {
-		return $this->Image()->CroppedImage(75,60);
-	}
-
-	public function ThumbnailFeature() {
-		return $this->Image()->CroppedImage(940,528);
-	}
-
-	public function ThumbnailCategory() {
-		return $this->Image()->CroppedImage(285,160);
-	}
-
 }
-
 
 class BlogEntry_Controller extends Page_Controller {
 	
-	private static $allowed_actions = array(
+	static $allowed_actions = array(
 		'index',
 		'trackbackping',
 		'unpublishPost',
@@ -305,5 +273,4 @@ class BlogEntry_Controller extends Page_Controller {
 		else if(method_exists('Page_Controller', 'PageComments')) return parent::PageComments();
 	}
 		
-
 }

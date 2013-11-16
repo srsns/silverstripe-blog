@@ -4,15 +4,15 @@
  * @package blog
  */
 class BlogManagementWidget extends Widget implements PermissionProvider {
-	static $db = array();
+	static private $db = array();
 
-	static $has_one = array();
+	static private $has_one = array();
 
-	static $has_many = array();
+	static private $has_many = array();
 
-	static $many_many = array();
+	static private $many_many = array();
 
-	static $belongs_many_many = array();
+	static private $belongs_many_many = array();
 
 	static $defaults = array();
 
