@@ -1,1 +1,1 @@
-<p>$Content.LimitWordCountXML(100)</p>
+<p>$Content.LimitWordCountXML(50)</p>

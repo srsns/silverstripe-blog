@@ -3,9 +3,13 @@
 		<div class="row">
 			<div class="single-post">
                 <div class="post-image post-format-image span12">
-                    <div class="wrapper">
-                        <a href="$Link"><img src="$ThumbnailFeature.URL" alt="$Title"></a>
-                    </div>
+                    <% if $Category="Standard" %>
+                        <% include StandardEntry %>
+                    <% else_if $Category="Video" %>
+                        <% include VideoEntry %>
+                    <% else_if $Category="Gallery" %>
+                        <% include StandardEntry %>
+                    <% end_if %>
                 </div>
                 <div class="post-content">
                     <div class="span12">
